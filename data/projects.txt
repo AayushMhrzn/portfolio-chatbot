@@ -1,0 +1,441 @@
+Projects Overivew:
+Aayush Maharjan has built many projects in past few years. Some projects are as follows: Audio-Driven Facial Animation System that generates Avatar speaking animation through audio input only using CNN-TCN deep learning approach.
+Network Intrusion Detection System (NIDS) project which can multi-classification of Web Traffic Attacks using Random Forest Classifier.
+Mock Interview ChatBot that helps to practice Interview with Relevance scoring, Sentiment Analysis, and Feedback Reporting.
+RAG based Chatbot which is made using LangChain, FAISS, HuggingFace embeddings, Groq LLM that has multi-mode feature with PDF uploader.
+Portfolio RAG Chatbot project is deployed in Portfolio website. It is fine tuned on sentence-transformers all-MiniLM-L6-v2 using LoRA via PEFT library, Supabase pgvector, Docker, FastAPI
+DIY HOME CCTV project built using Spare Webcam with motion detection, Person Detection from YOLOv8 integrated with Discord Alert message and remote cctv feed access.
+Developed PONG game using only C Programming Language with interactive user interface menu with various game mode features.
+---
+
+Project: Audio-Driven Facial Animation System
+
+Overview:
+I designed and implemented an Audio-Driven Facial Animation System that generates
+synchronized lip movements and facial animations directly from speech input using
+deep learning techniques. The primary objective was to create a lightweight, efficient,
+and temporally smooth facial animation model capable of predicting realistic lip
+movements from audio without relying on expensive motion capture systems or manual
+keyframe animation. The system was developed using Python, PyTorch, Librosa, OpenCV,
+MediaPipe, Flask API, Blender, and Three.js.
+
+Problem Statement:
+Traditional facial animation requires expensive motion capture equipment or tedious
+manual keyframe animation by artists. I built a deep learning approach that
+automatically generates realistic lip movements directly from audio input, making
+facial animation accessible and automated. The key challenge was ensuring both
+spatial accuracy of lip positions and temporal smoothness of transitions between frames.
+
+Datasets:
+The project utilized two major audio-visual datasets. The RAVDESS Dataset contains
+recordings from 24 professional actors with multiple emotional expressions. The MEAD
+Dataset provided larger sentence diversity, multiple speakers, and varied emotional
+intensities. Only frontal-view audio-visual recordings were selected to maintain
+consistency. The combined MEAD and RAVDESS dataset achieved the best performance
+during evaluation. Datasets were divided into audio and video streams for parallel
+processing.
+
+Audio Preprocessing:
+Mel-Frequency Cepstral Coefficients (MFCCs) were extracted from speech signals
+because they effectively capture perceptual speech characteristics related to
+articulation and lip motion. The MFCC extraction pipeline included pre-emphasis
+filtering, framing, Hamming windowing, Fast Fourier Transform (FFT), Mel filterbank
+processing, logarithmic compression, and Discrete Cosine Transform (DCT). Finally
+13 MFCC coefficients were retained as compact audio feature representations for
+each audio frame.
+
+Video Preprocessing and Landmark Extraction:
+Each video was decomposed into frames using OpenCV at 30 FPS. MediaPipe Face Mesh
+was then applied to extract 468 facial landmarks from each frame. From these landmarks
+only 20 inner lip landmark points were selected for training, reducing computational
+complexity while preserving essential lip movement information. Coordinates were
+normalized between 0 and 1 and temporally aligned with the MFCC features. Each
+training sample consisted of a 20-frame MFCC window paired with corresponding lip
+landmark coordinates.
+
+Model Architecture - CNN + TCN Hybrid:
+The proposed model combined Convolutional Neural Networks (CNNs) and Temporal
+Convolutional Networks (TCNs). The CNN layers extracted local temporal speech patterns
+and phoneme-level acoustic variations from MFCC sequences. The TCN captured long-range
+temporal dependencies and coarticulation effects using dilated causal convolutions and
+residual blocks. The final layers regressed continuous lip landmark coordinates from
+the extracted temporal features. This hybrid CNN-TCN architecture was specifically
+designed to handle both local acoustic features and long-range temporal speech patterns
+simultaneously.
+
+Training and Loss Functions:
+The model was trained using a combination of two loss functions. Mean Squared Error
+(MSE) Loss ensured spatial accuracy of predicted lip landmark positions. Temporal
+Velocity Loss ensured smooth facial transitions between consecutive frames by
+penalizing abrupt changes. Optimization was performed using the Adam optimizer with
+a learning rate of 0.001. Hyperparameter tuning was conducted by varying epochs,
+dropout rates, and temporal residual blocks. The optimal configuration used 30 training
+epochs, dropout rate of 0.1, and 4 temporal residual blocks.
+
+Results and Performance:
+The system demonstrated excellent performance during evaluation. The combined
+MEAD and RAVDESS dataset achieved the best results:
+- Landmark Mean Error (LME): 0.00589 (lowest achieved)
+- Temporal Smoothness Error: 1.91 × 10⁻⁶
+Qualitative evaluation confirmed that predicted lip landmarks closely matched
+ground-truth lip movements during mouth opening and closing sequences. The results
+validated the effectiveness of the hybrid CNN-TCN architecture for audio-driven
+facial animation.
+
+3D Animation and Deployment:
+The predicted lip landmarks were mapped to blendshape weights for 3D facial animation
+using a rigged facial model in Blender and Three.js. The system successfully generated
+smooth, synchronized, and realistic speech-driven facial animations. The complete
+pipeline was deployed as a Flask API supporting real-time audio input processing
+and 3D facial animation output.
+
+Tech Stack: Python, PyTorch, Librosa, OpenCV, MediaPipe, CNN, TCN, MFCC, Flask,
+Blender, Three.js, NumPy, Adam Optimizer, MSE Loss, Temporal Velocity Loss,
+Dilated Causal Convolutions, Residual Blocks
+
+Key Learnings:
+This project deepened my understanding of audio signal processing with MFCCs,
+temporal sequence modeling with TCNs, multi-loss training strategies for smooth
+output generation, facial landmark detection with MediaPipe, and bridging deep
+learning predictions with 3D animation rendering pipelines in Blender and Three.js.
+
+---
+
+Project: Network Intrusion Detection System (NIDS)
+
+Overview:
+I designed and developed a Machine Learning based Network Intrusion Detection System
+(NIDS) to identify and classify malicious network activities in real time. The primary
+objective was to improve network security by accurately detecting multiple categories
+of cyberattacks while minimizing false alarms. The system was implemented using Python
+and integrated with a Flask-based web application for deployment.
+
+Problem Statement:
+Traditional signature-based intrusion detection systems fail to detect novel and
+evolving cyberattacks. I built an ML-based approach that learns attack patterns from
+historical network traffic data and generalizes to new threats in real time. The system
+needed to handle multiple attack categories simultaneously while keeping false alarm
+rates low.
+
+Dataset:
+Trained on the CSE-CIC-IDS2018 dataset developed by the Canadian Institute for
+Cybersecurity (CIC). This is a modern and comprehensive cybersecurity dataset containing
+both normal and malicious network traffic. Attack categories include Bot, Brute
+Force-XSS, DDOS-HOIC, DoS-GoldenEye, DoS-Hulk, Slowloris, Infiltration, and
+SSH-Bruteforce.
+
+Data Collection and Flow Generation:
+Network packets were captured either through live traffic monitoring using Scapy or
+through uploaded PCAP files for offline analysis. Captured packets were grouped into
+network flows based on parameters including source IP, destination IP, source port,
+destination port, and protocol. From these flows, 26 significant traffic features were
+extracted including packet statistics, protocol indicators, header lengths, TCP flag
+counts, and flow duration metrics.
+
+Data Preprocessing:
+Applied several preprocessing techniques to prepare data for model training. Missing
+values and duplicate records were handled carefully. Categorical labels were encoded
+into numerical values. Min-Max Scaling was applied to normalize all feature values
+to a consistent range. Class imbalance was addressed using SMOTE (Synthetic Minority
+Over-sampling Technique) on the training data to generate synthetic minority class
+samples and improve detection capability for underrepresented attack types.
+
+Feature Engineering and Selection:
+Feature selection played a critical role in improving efficiency and reducing
+unnecessary complexity. Initially 79 features were considered from raw network traffic.
+The final 26 most relevant features were selected using a combination of three
+techniques: SelectKBest for statistical feature ranking, Random Forest Feature
+Importance for tree-based relevance scoring, and RFECV (Recursive Feature Elimination
+with Cross Validation) for wrapper-based selection. The dataset was split into training
+and testing sets using a stratified 70:30 split to preserve class distribution.
+
+Model Architecture and Training:
+The Random Forest algorithm was chosen for classification due to its robustness, high
+accuracy, and ability to handle imbalanced datasets effectively. Hyperparameter tuning
+was performed using RandomizedSearchCV with StratifiedKFold cross-validation to
+optimize model performance systematically. The trained model was serialized as
+trained-model.pkl and deployed within the Flask application for real-time intrusion
+detection and alert generation.
+
+Results and Performance:
+The developed NIDS demonstrated excellent performance during evaluation:
+- Overall Accuracy: 97.18%
+- Balanced Accuracy: 97.53%
+- ROC-AUC Score: 0.99861
+- AUCPR Score: 0.98963
+Most attack classes achieved near-perfect precision, recall, and F1-scores confirming
+the effectiveness of the system. The Infiltration attack class remained comparatively
+challenging and is identified as an area for future improvement.
+
+Deployment:
+The complete system was deployed as a Flask web application supporting both real-time
+live traffic monitoring via Scapy and offline PCAP file analysis. The application
+provides real-time intrusion detection alerts and multi-class attack classification
+for modern cybersecurity environments.
+
+Tech Stack: Python, Scikit-learn, Random Forest, SMOTE, Flask, Scapy, Pandas, NumPy,
+SelectKBest, RFECV, RandomizedSearchCV, StratifiedKFold, Min-Max Scaling, Pickle
+
+Key Learnings:
+Working on this project deepened my understanding of cybersecurity ML pipelines,
+the importance of feature engineering in high-dimensional data, handling severe class
+imbalance in real-world datasets, and deploying ML models in production web applications.
+
+---
+
+Project: Interview ChatBot using Streamlit, NLP and Speech Recognition
+
+Overview:
+I built an AI-powered interactive mock interview chatbot that conducts automated
+interviews, analyzes candidate responses in real time using NLP techniques, and
+generates a detailed performance report. The system combines speech recognition,
+webcam streaming, natural language processing, and automated scoring into a single
+integrated application built with Streamlit.
+
+Problem Statement:
+Job interview preparation is often done without feedback, leaving candidates unaware
+of how relevant or confident their answers are. I built a system that simulates a
+real interview environment with live webcam feed and voice input, while automatically
+analyzing the quality of responses using NLP metrics like relevance, sentiment, and
+keyword extraction.
+
+System Architecture:
+The application was built using Streamlit for the web interface with a two-panel
+layout. The main panel displays a live webcam feed using streamlit-webrtc for
+real-time video streaming. The sidebar contains the chat interface where interview
+questions are presented sequentially and candidate answers are collected either via
+text input or voice using speech recognition.
+
+NLP Analysis Pipeline:
+Each candidate answer is analyzed in real time using multiple NLP techniques.
+SpaCy was used for named entity recognition and noun chunk extraction to identify
+keywords in the response. TextBlob was used for sentiment analysis measuring both
+polarity (positive/negative) and subjectivity of the answer. TF-IDF vectorization
+with cosine similarity was used to calculate a relevance score between the question
+and the candidate's answer, measuring how directly the response addressed the question.
+
+Speech Recognition:
+The system supports voice input using the SpeechRecognition library with Google
+Speech Recognition as the backend. Ambient noise adjustment was applied before
+listening to improve transcription accuracy. The microphone captures up to 20 seconds
+of speech per answer with a 10 second timeout, then transcribes and processes it
+through the same NLP pipeline as text input.
+
+Scoring and Feedback:
+For each answer the system displays real-time NLP feedback including relevance score
+as a percentage, sentiment polarity score from -1 to +1, subjectivity score from 0
+to 1, detected named entities with their types such as PERSON, ORG, or DATE, and
+extracted keywords from noun chunks. This gives candidates immediate insight into
+how well their answers addressed each question.
+
+Interview Report Generation:
+At the end of all questions the system generates a comprehensive interview summary
+report. The report includes each question with the candidate's answer, individual
+relevance scores, sentiment analysis results, and an overall average relevance score.
+A final verdict is generated automatically — candidates scoring above 50% relevance
+are classified as likely fit for the role, while those below are advised to improve.
+
+Tech Stack: Python, Streamlit, streamlit-webrtc, SpaCy, TextBlob, Scikit-learn,
+TF-IDF Vectorizer, Cosine Similarity, SpeechRecognition, Google Speech API,
+OpenCV, av (PyAV), NLP, Sentiment Analysis, Named Entity Recognition
+
+Key Learnings:
+This project strengthened my skills in building real-time NLP pipelines, integrating
+speech recognition into web applications, implementing relevance scoring using TF-IDF
+and cosine similarity, handling real-time video streaming in browser-based Python apps,
+and designing automated evaluation and report generation systems.
+
+---
+
+Project: RAG Chatbot (CHATGURU) using LangChain and Groq
+
+Overview:
+I developed a multi-mode RAG-based AI chatbot called CHATGURU that combines
+document-aware question answering with general conversational AI capabilities.
+The system supports PDF document ingestion for context-aware Q&A, multiple
+specialized chat modes, and conversational memory for context continuity. Built
+with Streamlit for the frontend and powered by Groq's Llama 3.1 as the LLM backend.
+
+Problem Statement:
+Generic chatbots lack the ability to answer questions about specific documents or
+switch between specialized roles like a Python expert or language translator. I built
+a flexible chatbot that can operate in multiple modes and dynamically incorporate
+uploaded documents into its knowledge base using RAG, making it useful for document
+Q&A, coding help, and language translation in a single application.
+
+RAG Pipeline:
+The RAG pipeline handles PDF document ingestion using PyMuPDF loader. Documents are
+split into chunks using RecursiveCharacterTextSplitter with chunk size of 800 and
+overlap of 150 tokens. HuggingFace sentence-transformers all-MiniLM-L6-v2 was used
+to generate semantic embeddings for each chunk. Chunks and their embeddings are stored
+in a FAISS in-memory vector store for fast similarity search. When a user asks a
+question the retriever fetches the most relevant chunks and passes them as context
+to the LLM for answer generation using a custom prompt template.
+
+Multiple Chat Modes:
+The system supports three specialized chat modes selectable from the sidebar. General
+Assistant mode provides helpful and friendly responses to any question. Python Helper
+mode acts as a Python expert providing code examples with brief explanations. Nepali
+Translator mode translates between English and Nepali languages. Each mode has its
+own custom prompt template that shapes the LLM behavior and response style.
+
+Conversational Memory:
+LangChain ConversationBufferMemory was used to maintain full conversation history
+across turns. This enables context-aware responses where the model remembers previous
+messages in the session. The memory is shared between both the RAG chain and the
+default conversational chain ensuring consistent context regardless of mode.
+
+LLM Integration:
+Groq API with Llama 3.1 8B Instant model was used as the LLM backend providing
+fast and free inference. Temperature was set to 0 for deterministic and factual
+responses. Two separate LangChain chains were implemented: ConversationalRetrievalChain
+for document Q&A with retriever context injection, and LLMChain for general
+conversational modes without document context.
+
+User Interface:
+Built with Streamlit featuring a clean two-panel layout. The main panel displays
+the chat conversation using Streamlit chat message components. The sidebar provides
+controls for clearing chat history, selecting chat mode, and uploading PDF documents.
+The system dynamically switches between RAG mode and general chat mode based on
+whether a document has been uploaded.
+
+Tech Stack: Python, Streamlit, LangChain, Groq, Llama 3.1, FAISS, HuggingFace,
+sentence-transformers, all-MiniLM-L6-v2, PyMuPDF, RecursiveCharacterTextSplitter,
+ConversationalRetrievalChain, LLMChain, ConversationBufferMemory, PromptTemplate,
+RAG, Vector Search
+
+Key Learnings:
+This project deepened my understanding of building end-to-end RAG pipelines with
+LangChain, designing multi-mode LLM applications with dynamic prompt engineering,
+implementing conversational memory for context-aware chatbots, integrating FAISS
+for in-memory vector search, and working with Groq API for fast LLM inference.
+
+---
+
+Project: Portfolio RAG Chatbot (This Project)
+
+Overview:
+I designed and built a production-grade RAG-based chatbot deployed directly on my
+portfolio website that answers questions about my experience, skills, projects, and
+background. Visitors can interact with an AI assistant that has deep knowledge about
+me specifically. This project was built end-to-end covering ML engineering, backend
+development, DevOps, and frontend integration.
+
+Problem Statement:
+Most portfolio websites are static and require recruiters to manually read through
+pages of content. I built an intelligent chatbot that lets recruiters and hiring
+managers ask natural language questions like "Does Aayush know Docker?" or "What
+was his best project?" and get accurate, context-aware answers instantly. This
+makes my portfolio interactive, memorable, and demonstrates real AI engineering skills.
+
+ML Pipeline - Fine-tuning with LoRA:
+Instead of using a generic off-the-shelf embedding model I fine-tuned a custom
+embedding model specifically trained on my portfolio data. The base model used was
+sentence-transformers all-MiniLM-L6-v2 which was domain-adapted using LoRA via
+the HuggingFace PEFT library. LoRA (Low-Rank Adaptation) was applied to the query
+and value attention layers with rank 8 and alpha 16, training only 73,728 parameters
+out of 22 million total — just 0.32% of all weights. This made fine-tuning feasible
+on a local GPU without requiring expensive cloud compute.
+
+Synthetic Data Generation:
+829 domain-specific Q&A training pairs were generated using a multi-strategy data
+augmentation pipeline. Strategies included hand-written seed pairs, LLM-based question
+paraphrasing using Groq Llama 3.3, chunk-based Q&A generation from portfolio text
+files, answer variation generation, and hard negative pair mining. This synthetic
+data generation pipeline demonstrates practical knowledge of NLP data engineering.
+
+Training with Triplet Loss:
+The fine-tuning used triplet loss with hard negatives — a production-standard approach
+for training embedding models. Each training sample consisted of an anchor question,
+a positive answer, and a hard negative answer from a similar but different question.
+Hard negatives were mined by finding answers from questions sharing at least 2 keywords,
+forcing the model to learn fine-grained semantic distinctions. Training ran for 10
+epochs on an NVIDIA GTX 1660 Ti GPU achieving a final loss of 0.087.
+
+RAG Pipeline:
+Portfolio data files covering about, projects, and resume were chunked into 150-word
+overlapping segments with 30-word overlap to preserve context across boundaries. Each
+chunk was embedded using the fine-tuned model producing 384-dimensional vectors. All
+embeddings were stored in Supabase pgvector — a PostgreSQL-based vector database.
+A custom SQL match_documents function was created for fast cosine similarity search
+with configurable threshold and result count.
+
+Backend - FastAPI:
+A production-grade REST API was built using FastAPI exposing a /chat endpoint. The
+endpoint accepts user questions, embeds them using the fine-tuned model, retrieves
+the top relevant chunks from Supabase, constructs a context-aware prompt, and sends
+it to Groq Llama 3.3 for answer generation. The API includes request validation with
+Pydantic, CORS middleware for frontend integration, and error handling.
+
+MCP Server:
+An MCP (Model Context Protocol) server endpoint was implemented making the portfolio
+chatbot accessible to AI tools like Claude. This allows AI assistants to query
+information about Aayush directly through the standardized MCP protocol, demonstrating
+knowledge of modern AI infrastructure and agent communication standards.
+
+DevOps - Docker:
+The entire backend was containerized using Docker with a multi-stage Dockerfile.
+Docker Compose was used for local development orchestration. Kubernetes manifests
+including Deployment and Service YAML files were written making the system K8s-ready
+for production scaling. The containerized application was deployed to Render.com
+free tier for live production hosting.
+
+Frontend Integration:
+A chat widget was built in React and TypeScript and integrated into the existing
+Vite-based portfolio website. The widget connects to the deployed FastAPI backend
+and provides a clean floating chat interface for visitors to interact with.
+
+Tech Stack: Python, PyTorch, HuggingFace Transformers, PEFT, LoRA, sentence-transformers,
+Triplet Loss, Groq, Llama 3.3, FastAPI, Supabase, pgvector, Docker, Kubernetes,
+React, TypeScript, Vite, MCP, Render, NumPy, Cosine Similarity
+
+Key Learnings:
+This project gave me hands-on experience across the full AI engineering stack —
+from ML model fine-tuning and synthetic data generation, to production API development,
+vector database management, containerization with Docker, Kubernetes configuration,
+MCP server implementation, and frontend integration. It represents a complete
+end-to-end production AI system built entirely from scratch.
+
+---
+
+Project: DIY HOME CCTV using Spare Webcam with Person Detection AI
+
+Overview:
+A fully functional home gate security system built from a spare USB webcam and entirely free, open-source tools. The system provides a live MJPEG video stream accessible from anywhere in the world, AI-powered person detection with real-time bounding boxes, and instant Discord alerts with photo snapshots when a person is detected at the gate.
+ 
+Problem Statement:
+Commercially available CCTV systems are expensive and require proprietary hardware and subscriptions. The goal was to build an equivalent system at zero hardware cost using an existing USB webcam, with remote viewing capability, intelligent person alerts, and low enough resource usage to run silently in the background on a gaming laptop without impacting performance.
+ 
+System Architecture:
+The system is built as a single Python process with four concurrent threads that run independently, ensuring the camera feed never lags regardless of what the alert or AI thread is doing.
+Reads frames from the USB webcam at 320×240 resolution capped at 15 FPS. Each frame passes through a corruption validator before processing — dropping black frames, green-dominant frames (USB cable artifact), and frames with abnormal contrast caused by poor extension cable signal. Valid frames go to motion detection and then to the stream buffer."),
+ Uses OpenCV's MOG2 background subtractor on every frame to detect motion with near-zero CPU cost. When motion exceeds the threshold, YOLOv8-nano runs inference every 5th frame only, confirming whether the moving object is a person. This hybrid approach keeps CPU at 3–6% when idle and avoids running heavy AI continuously.
+ Serves a multipart MJPEG stream over HTTP on port. Any browser — on phone or PC — can open the stream with no app required. The stream reads from a shared frame buffer protected by a thread lock, ensuring it never waits for the camera or AI threads.
+A dedicated queue-based worker handles all Discord HTTP requests. Alerts are placed into a queue with a maximum size of 2, so the camera thread never blocks waiting for a network response. A cooldown timer (30 seconds) prevents alert flooding during prolonged motion.
+
+Detection Pipeline:
+Builds a statistical background model over 200 frames, Compares each new frame against the background model,Flags motion when changed pixel area exceeds the threshold (default: 5000 pixels), Draws green bounding boxes around all moving regions on the stream overlay.
+Person Detection — YOLOv8-nano runs only when motion is detected, and only every 5th motion frame. Detects persons only (class 0), ignoring all other objects,Draws cyan bounding boxes with confidence percentage label on confirmed persons.
+Tailscale VPN enables secure remote viewing from anywhere in the world without exposing any port to the public internet. After installing Tailscale on both the laptop and phone, the stream is accessible at the laptop's Tailscale IP address from any network.
+The USB webcam is connected to the laptop and positioned at the gate using a USB extension solution. The MJPG codec is explicitly set on the camera capture to reduce USB bandwidth, which is the primary cause of frame corruption on extension cables.
+The script runs silently in the background with no visible window using pythonw. It auto-starts on Windows login via Task Scheduler.
+
+Features summary:
+
+Live MJPEG stream — watch on any phone or PC browser, no app needed",
+Hybrid detection — MOG2 motion detection + YOLOv8-nano person confirmation",
+Real-time overlay — timestamp, GATE CAM label, green motion boxes, cyan person boxes",
+Discord alerts — snapshot photo sent on person detection with 30-second cooldown",
+Frame corruption filter — rejects bad USB frames before they trigger false motion",
+Resource monitor — logs CPU and RAM every 30 seconds to gate_cctv.log",
+Background service — runs silently, auto-starts on Windows login",
+Global remote access — Tailscale VPN, no public port exposure"
+
+Project: Ping Pong Game using C Language
+Created Ping Pong Game with Interactive 90s style arcade Graphics using only C Programming Language. This utilizes the graphics header of C for the user interface providing Game Menu 90s arcade style.
+Some of the main features of the game are listed below:
+Player Options - Single, Multiplayer
+Computer Bot against single player
+Difficulty Options - Easy, Medium, Hard
+Interactive Graphics UI Style for User to select Modes
+Leaderboard of scores.

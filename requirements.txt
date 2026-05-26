@@ -1,0 +1,28 @@
+# Core ML
+torch
+transformers
+datasets
+peft
+sentence-transformers
+accelerate
+
+# Backend
+fastapi
+uvicorn
+python-dotenv
+pydantic
+
+# Vector DB
+supabase
+
+# LLM
+groq
+
+# MCP
+fastapi-mcp
+
+# Utils
+numpy
+pandas
+scikit-learn
+tqdm

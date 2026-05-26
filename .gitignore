@@ -1,0 +1,21 @@
+# Environment variables — never commit these
+.env
+
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Training data — too large for GitHub
+data/training_pairs.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

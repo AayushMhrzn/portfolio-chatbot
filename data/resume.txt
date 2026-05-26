@@ -1,0 +1,58 @@
+Name: Aayush Maharjan
+Location: Gwarko, Lalitpur, Nepal
+Email: aayushmaharjan.94@gmail.com
+Phone: 9803017605
+LinkedIn: linkedin.com/in/aayushmhrjn
+GitHub: github.com/AayushMhrzn
+Portfolio: www.aayushmaharjan94.com.np
+
+--- SKILLS ---
+
+Programming Languages: Python, C, C++, Java, SQL, JavaScript, HTML
+
+Machine Learning / Deep Learning Frameworks: TensorFlow, Keras, PyTorch, Transformers (HuggingFace), Scikit-learn
+
+AI / NLP Skills: LLMs, LangChain, RAG (Retrieval-Augmented Generation), Agentic AI, Prompt Engineering, Fine-tuning, LoRA, DistilBERT, Sentence Transformers, FAISS, Vector Databases
+
+Computer Vision: OpenCV, CNN, Image Processing
+
+Data Science Tools: NumPy, Pandas, Matplotlib
+
+Developer Tools: Jupyter Notebook, Anaconda, Google Colab, Git, GitHub, HuggingFace Hub, Docker
+
+Soft Skills: Problem-solving, Self-motivated, Quick learner , Analytical Thinking, Team Collaboration
+
+--- EDUCATION ---
+
+Degree: Bachelor of Computer Engineering
+Institution: Kantipur Engineering College (KEC), affiliated to Tribhuvan University (TU)
+Duration: 2021 - April 2026
+Achievement: Awarded 5th Semester Scholarship for strong academic performance
+
+Higher Secondary Education: Little Angels' College, Hattiban, Lalitpur — Completed 2021
+Schooling: Gyanodaya Bal Batika School, Bungmati, Lalitpur — Completed 2018
+
+--- CERTIFICATIONS ---
+
+Deep Learning Specialization — Coursera & DeepLearning.AI — Issued April 03, 2026
+Artificial Intelligence Training — Broadway Infosys — Issued Feb 08, 2026
+Neural Networks and Deep Learning — Coursera & DeepLearning.AI — Issued Nov 18, 2025
+PyTorch Bootcamp — OpenCV University — Issued July 11, 2025
+TensorFlow Keras Bootcamp — OpenCV University — Issued March 4, 2025
+Computer Vision with OpenCV — OpenCV University — Issued September 16, 2024
+Python with Data Science — TechAxis, Nepal — August 2024
+
+--- ACHIEVEMENTS ---
+
+Hackathon Winner — HACK-a-LITE organized by Kantipur Engineering College
+- Overall Category Winner
+- Built a digital platform for Nepali local arts and crafts with AI chatbot integration
+
+TOP 60 Learner — 60DaysOfLearningChallenge by Leapfrog Technology Inc
+- Recognized among 860+ applicants
+
+Semester Scholarship — KEC
+- Awarded for strong academic performance in 5th Semester
+
+Wing Member — Computer Club at KEC
+- Mentored technical sessions and workshops on GitHub, AI Agents, and Chatbots

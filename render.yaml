@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: portfolio-chatbot
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: HF_TOKEN
+        sync: false

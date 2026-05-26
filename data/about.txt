@@ -1,0 +1,33 @@
+My name is Aayush Maharjan. I am a Computer Engineer and aspiring AI/ML Engineer based in Gwarko, Lalitpur, Nepal.
+
+I recently completed my Bachelor of Computer Engineering at Kantipur Engineering College (KEC), affiliated to Tribhuvan University, which I started in 2021 and completed in April 2026.
+
+I am enthusiastic and driven with a strong foundation in Python, Machine Learning, Deep Learning, Computer Vision, Agentic AI, and Retrieval-Augmented Generation (RAG). I am passionate about building impactful AI-powered systems and I am a quick learner who enjoys learning something new every day.
+
+My email is aayushmaharjan.94@gmail.com. You can find my work on GitHub at github.com/AayushMhrzn, connect with me on LinkedIn at linkedin.com/in/aayushmhrjn, and visit my portfolio website at www.aayushmaharjan94.com.np.
+
+I completed my Higher Secondary Education at Little Angels College, Hattiban, Lalitpur in 2021, and my schooling at Gyanodaya Bal Batika School, Bungmati, Lalitpur in 2018.
+
+I became a Wing Member of the Computer Club at KEC where I have mentored technical sessions and workshops on GitHub, AI Agents, and Chatbot development.
+
+I was recognized as a TOP 60 Learner among 860+ applicants in the 60DaysOfLearningChallenge organized by Leapfrog Technology Inc.
+
+I won the Overall Category at the HACK-a-LITE Hackathon organized by Kantipur Engineering College. Our team proposed and developed a digital platform focused on preserving and promoting Nepali local arts and crafts through video-based learning and marketplace integration, with an integrated AI-powered chatbot.
+
+I was awarded the 5th Semester Scholarship at Kantipur Engineering College for strong academic performance.
+
+Why I Chose AI/ML:
+I became interested in AI and Machine Learning because I enjoy building systems that can learn from data and solve practical problems. During my engineering studies I explored areas like machine learning, deep learning, computer vision, and generative AI through hands on exercises and self-learning. What attracted me most to AI was the ability to create intelligent systems that can automate tasks, improve user experiences, and make technology more useful in real-world scenarios. Over time working on projects in Network Intrusion Detection System, conversational AI, and audio-driven facial animation further strengthened my interest in this field.
+
+What Excites Me:
+What excites me the most about AI is building real systems that people can actually use. I enjoy turning ideas into working applications whether it is developing RAG-based chatbots, AI-powered assistants, computer vision systems, or deep learning models. I like solving practical problems and understanding how AI can be integrated into production environments rather than just training models in notebooks. I am also interested in the fast-growing ecosystem around LLMs, AI agents, and automation tools.
+
+My Learning Approach:
+I am a self-motivated learner who believes strongly in project-based learning and impactful Courses. Most of my learning comes from experimenting, building projects, reading documentation, watching technical resources, and continuously improving my skills through hands-on practice. I enjoy exploring new technologies and challenging myself with practical implementations instead of only focusing on theory. Alongside academics I have participated in hackathons, technical communities, workshops, and learning challenges that helped me grow both technically and professionally.
+
+My Goal:
+My goal is to work as an AI Engineer and contribute to building scalable, reliable, and production-ready AI systems that solve real-world problems. While I am highly interested in LLMs, RAG pipelines, fine-tuning, and AI agents, I also want to continue growing across broader AI domains such as Machine Learning, Deep Learning, Computer Vision, Speech Processing, OCR systems, NLP, and intelligent automation. I enjoy exploring how different AI technologies can work together to create practical applications that improve efficiency, accessibility, and user experience.
+
+In the long term I want to gain strong industry experience by working on end-to-end AI solutions from data preprocessing and model development to deployment and system integration. I am particularly interested in computer vision applications, speech-based systems, multimodal AI, OCR and document intelligence, and conversational AI systems deployed in real production environments. I aim to continuously learn emerging technologies, contribute to impactful projects, and grow into an engineer capable of designing intelligent systems across multiple AI fields.
+
+I am currently looking for AI Engineer or ML Engineer roles where I can apply my skills in LLMs, RAG, fine-tuning, computer vision, and production AI systems.
