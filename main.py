@@ -200,16 +200,16 @@ async def root():
  
 # ─── STARTUP EVENT ────────────────────────────────────────────────────────────
  
-@app.on_event("startup")
-async def startup_event():
-    """
-    Pre-load the embedding model when FastAPI starts.
-    This way the first user request isn't slow.
-    """
-    print("Pre-loading embedding model on startup...")
-    from retriever import get_model
-    get_model()
-    print("API ready ✅")
+# @app.on_event("startup")
+# async def startup_event():
+#     """
+#     Pre-load the embedding model when FastAPI starts.
+#     This way the first user request isn't slow.
+#     """
+#     print("Pre-loading embedding model on startup...")
+#     from retriever import get_model
+#     get_model()
+#     print("API ready ✅")
  
  
 if __name__ == "__main__":

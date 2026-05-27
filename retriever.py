@@ -23,8 +23,8 @@ load_dotenv()
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 
-BASE_MODEL      = "sentence-transformers/all-MiniLM-L6-v2"
-LORA_MODEL      = "models/portfolio-distilbert"
+BASE_MODEL      = "models/portfolio-merged"
+LORA_MODEL      = "models/portfolio-merged"
 MATCH_COUNT     = 5      # how many chunks to retrieve
 MATCH_THRESHOLD = 0.15   # lowered — our model scores in 0.2-0.5 range
 MAX_LENGTH      = 256
@@ -39,14 +39,12 @@ _tokenizer = None
 _model     = None
 
 def get_model():
-    """Load model once, reuse after that."""
     global _tokenizer, _model
     if _tokenizer is None or _model is None:
-        print("Loading embedding model...")
-        _tokenizer = AutoTokenizer.from_pretrained(LORA_MODEL)
-        base       = AutoModel.from_pretrained(BASE_MODEL)
-        model      = PeftModel.from_pretrained(base, LORA_MODEL)
-        _model     = model.merge_and_unload()
+        print("Loading merged model...")
+        _tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+        # Load directly — no PeftModel needed, already merged
+        _model = AutoModel.from_pretrained(BASE_MODEL)
         _model.eval()
         _model.to(device)
         print("Model ready ✅")
