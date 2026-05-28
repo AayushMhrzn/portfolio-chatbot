@@ -26,3 +26,4 @@ numpy
 pandas
 scikit-learn
 tqdm
+optimum[onnxruntime]

@@ -16,15 +16,15 @@ import numpy as np
 from dotenv import load_dotenv
 from supabase import create_client
 from transformers import AutoTokenizer, AutoModel
-from peft import PeftModel
+#from peft import PeftModel
 import torch.nn.functional as F
+from optimum.onnxruntime import ORTModelForFeatureExtraction
 
 load_dotenv()
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 
-BASE_MODEL      = "models/portfolio-merged"
-LORA_MODEL      = "models/portfolio-merged"
+ONNX_MODEL = "models/portfolio-onnx"
 MATCH_COUNT     = 5      # how many chunks to retrieve
 MATCH_THRESHOLD = 0.15   # lowered — our model scores in 0.2-0.5 range
 MAX_LENGTH      = 256
@@ -41,13 +41,10 @@ _model     = None
 def get_model():
     global _tokenizer, _model
     if _tokenizer is None or _model is None:
-        print("Loading merged model...")
-        _tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
-        # Load directly — no PeftModel needed, already merged
-        _model = AutoModel.from_pretrained(BASE_MODEL)
-        _model.eval()
-        _model.to(device)
-        print("Model ready ✅")
+        print("Loading ONNX model...")
+        _tokenizer = AutoTokenizer.from_pretrained(ONNX_MODEL)
+        _model     = ORTModelForFeatureExtraction.from_pretrained(ONNX_MODEL)
+        print("ONNX model ready ✅")
     return _tokenizer, _model
 
 
@@ -67,19 +64,15 @@ def embed_query(text: str) -> list:
         truncation=True,
         return_tensors="pt"
     )
-    tokens = {k: v.to(device) for k, v in tokens.items()}
-
-    with torch.no_grad():
-        outputs = model(**tokens)
-        # Mean pooling
-        mask        = tokens["attention_mask"].unsqueeze(-1).float()
-        sum_emb     = torch.sum(outputs.last_hidden_state * mask, dim=1)
-        sum_mask    = torch.clamp(mask.sum(dim=1), min=1e-9)
-        embedding   = sum_emb / sum_mask
-        # L2 normalize
-        embedding   = F.normalize(embedding, p=2, dim=1)
-
-    return embedding.cpu().numpy()[0].tolist()
+    outputs   = model(**tokens)
+    embedding = outputs.last_hidden_state
+    # Mean pooling
+    mask      = tokens["attention_mask"].unsqueeze(-1).float()
+    sum_emb   = torch.sum(embedding * mask, dim=1)
+    sum_mask  = torch.clamp(mask.sum(dim=1), min=1e-9)
+    emb       = sum_emb / sum_mask
+    emb       = F.normalize(emb, p=2, dim=1)
+    return emb.detach().numpy()[0].tolist()
 
 
 # ─── SUPABASE CLIENT ──────────────────────────────────────────────────────────
