@@ -11,13 +11,13 @@ Can be run standalone to test retrieval:
 
 import os
 import json
-import torch
+#import torch
 import numpy as np
 from dotenv import load_dotenv
 from supabase import create_client
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer
 #from peft import PeftModel
-import torch.nn.functional as F
+#import torch.nn.functional as F
 from optimum.onnxruntime import ORTModelForFeatureExtraction
 
 load_dotenv()
@@ -29,7 +29,7 @@ MATCH_COUNT     = 5      # how many chunks to retrieve
 MATCH_THRESHOLD = 0.15   # lowered — our model scores in 0.2-0.5 range
 MAX_LENGTH      = 256
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # ─── SINGLETON MODEL LOADER ───────────────────────────────────────────────────
@@ -51,10 +51,6 @@ def get_model():
 # ─── EMBEDDING ────────────────────────────────────────────────────────────────
 
 def embed_query(text: str) -> list:
-    """
-    Convert a question string into a 384-dim embedding vector.
-    Returns a Python list (required by Supabase RPC).
-    """
     tokenizer, model = get_model()
 
     tokens = tokenizer(
@@ -62,17 +58,23 @@ def embed_query(text: str) -> list:
         max_length=MAX_LENGTH,
         padding=True,
         truncation=True,
-        return_tensors="pt"
+        return_tensors="np"   # IMPORTANT: use numpy directly
     )
-    outputs   = model(**tokens)
-    embedding = outputs.last_hidden_state
-    # Mean pooling
-    mask      = tokens["attention_mask"].unsqueeze(-1).float()
-    sum_emb   = torch.sum(embedding * mask, dim=1)
-    sum_mask  = torch.clamp(mask.sum(dim=1), min=1e-9)
-    emb       = sum_emb / sum_mask
-    emb       = F.normalize(emb, p=2, dim=1)
-    return emb.detach().numpy()[0].tolist()
+
+    outputs = model(**tokens)
+
+    embedding = outputs.last_hidden_state  # already numpy in ORT
+
+    mask = tokens["attention_mask"][..., None]
+
+    sum_emb = (embedding * mask).sum(axis=1)
+    sum_mask = np.clip(mask.sum(axis=1), 1e-9, None)
+
+    emb = sum_emb / sum_mask
+
+    emb = emb / np.linalg.norm(emb, axis=1, keepdims=True)
+
+    return emb[0].tolist()
 
 
 # ─── SUPABASE CLIENT ──────────────────────────────────────────────────────────
