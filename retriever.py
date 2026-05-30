@@ -11,25 +11,25 @@ Can be run standalone to test retrieval:
 
 import os
 import json
-#import torch
+import torch
 import numpy as np
 from dotenv import load_dotenv
 from supabase import create_client
-from transformers import AutoTokenizer
-#from peft import PeftModel
-#import torch.nn.functional as F
-from optimum.onnxruntime import ORTModelForFeatureExtraction
+from transformers import AutoTokenizer, AutoModel
+from peft import PeftModel
+import torch.nn.functional as F
 
 load_dotenv()
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 
-ONNX_MODEL = "models/portfolio-onnx"
+BASE_MODEL      = "models/portfolio-merged"
+LORA_MODEL      = "models/portfolio-merged"
 MATCH_COUNT     = 5      # how many chunks to retrieve
 MATCH_THRESHOLD = 0.15   # lowered — our model scores in 0.2-0.5 range
 MAX_LENGTH      = 256
 
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # ─── SINGLETON MODEL LOADER ───────────────────────────────────────────────────
@@ -41,16 +41,23 @@ _model     = None
 def get_model():
     global _tokenizer, _model
     if _tokenizer is None or _model is None:
-        print("Loading ONNX model...")
-        _tokenizer = AutoTokenizer.from_pretrained(ONNX_MODEL)
-        _model     = ORTModelForFeatureExtraction.from_pretrained(ONNX_MODEL)
-        print("ONNX model ready ✅")
+        print("Loading merged model...")
+        _tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+        # Load directly — no PeftModel needed, already merged
+        _model = AutoModel.from_pretrained(BASE_MODEL)
+        _model.eval()
+        _model.to(device)
+        print("Model ready ✅")
     return _tokenizer, _model
 
 
 # ─── EMBEDDING ────────────────────────────────────────────────────────────────
 
 def embed_query(text: str) -> list:
+    """
+    Convert a question string into a 384-dim embedding vector.
+    Returns a Python list (required by Supabase RPC).
+    """
     tokenizer, model = get_model()
 
     tokens = tokenizer(
@@ -58,23 +65,21 @@ def embed_query(text: str) -> list:
         max_length=MAX_LENGTH,
         padding=True,
         truncation=True,
-        return_tensors="np"   # IMPORTANT: use numpy directly
+        return_tensors="pt"
     )
+    tokens = {k: v.to(device) for k, v in tokens.items()}
 
-    outputs = model(**tokens)
+    with torch.no_grad():
+        outputs = model(**tokens)
+        # Mean pooling
+        mask        = tokens["attention_mask"].unsqueeze(-1).float()
+        sum_emb     = torch.sum(outputs.last_hidden_state * mask, dim=1)
+        sum_mask    = torch.clamp(mask.sum(dim=1), min=1e-9)
+        embedding   = sum_emb / sum_mask
+        # L2 normalize
+        embedding   = F.normalize(embedding, p=2, dim=1)
 
-    embedding = outputs.last_hidden_state  # already numpy in ORT
-
-    mask = tokens["attention_mask"][..., None]
-
-    sum_emb = (embedding * mask).sum(axis=1)
-    sum_mask = np.clip(mask.sum(axis=1), 1e-9, None)
-
-    emb = sum_emb / sum_mask
-
-    emb = emb / np.linalg.norm(emb, axis=1, keepdims=True)
-
-    return emb[0].tolist()
+    return embedding.cpu().numpy()[0].tolist()
 
 
 # ─── SUPABASE CLIENT ──────────────────────────────────────────────────────────
